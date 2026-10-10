@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SnapDrop — Social Media Downloader</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0E1A;
+    --surface: #111827;
+    --surface2: #1A2236;
+    --border: #1E293B;
+    --violet: #7C3AED;
+    --violet-light: #9F67FF;
+    --violet-dim: rgba(124,58,237,0.15);
+    --emerald: #10B981;
+    --emerald-dim: rgba(16,185,129,0.12);
+    --silver: #94A3B8;
+    --white: #F1F5F9;
+    --muted: #475569;
+    --danger: #EF4444;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .logo-icon {
+    width: 34px; height: 34px;
+    background: var(--violet);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-icon svg { width: 18px; height: 18px; }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--silver);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    background: var(--violet);
+    color: #fff;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .nav-cta:hover { background: var(--violet-light); }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 80px 24px 64px;
+    max-width: 820px;
+    margin: 0 auto;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--violet-dim);
+    border: 1px solid rgba(124,58,237,0.3);
+    color: var(--violet-light);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin-bottom: 28px;
+    letter-spacing: 0.03em;
+  }
+  .badge-dot {
+    width: 6px; height: 6px;
+    background: var(--violet-light);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  h1 {
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--white);
+    margin-bottom: 18px;
+  }
+  h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--violet-light), #C084FC);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    font-size: 1.05rem;
+    color: var(--silver);
+    max-width: 520px;
+    margin: 0 auto 44px;
+    font-weight: 400;
+    line-height: 1.65;
+  }
+
+  /* DOWNLOADER CARD */
+  .downloader {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px;
+    max-width: 780px;
+    margin: 0 auto 80px;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+  }
+  .input-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .url-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: var(--white);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 400;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .url-input::placeholder { color: var(--muted); }
+  .url-input:focus {
+    border-color: var(--violet);
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.15);
+  }
+  .fetch-btn {
+    background: var(--violet);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .fetch-btn:hover { background: var(--violet-light); }
+  .fetch-btn:active { transform: scale(0.98); }
+  .fetch-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  /* FORMAT SELECTOR */
+  .format-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .fmt-tab {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 18px;
+    border-radius: 9px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--silver);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .fmt-tab:hover { border-color: var(--violet); color: var(--white); }
+  .fmt-tab.active {
+    background: var(--violet-dim);
+    border-color: var(--violet);
+    color: var(--violet-light);
+  }
+  .fmt-tab svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  /* RESULT PANEL */
+  #result-panel {
+    display: none;
+    margin-top: 24px;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+  }
+  #result-panel.show { display: block; }
+
+  .result-meta {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .result-thumb {
+    width: 120px;
+    height: 76px;
+    border-radius: 10px;
+    background: var(--surface2);
+    object-fit: cover;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+  .result-info { flex: 1; min-width: 0; }
+  .result-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .result-source {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .result-source span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: var(--surface2);
+    border-radius: 4px;
+    font-size: 0.75rem;
+  }
+
+  /* QUALITY OPTIONS */
+  .quality-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .quality-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--bg);
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .quality-option:hover { border-color: var(--violet); }
+  .quality-option.selected {
+    border-color: var(--violet);
+    background: var(--violet-dim);
+  }
+  .quality-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--white);
+  }
+  .quality-size {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+  .quality-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: var(--emerald-dim);
+    color: var(--emerald);
+  }
+
+  .download-btn {
+    width: 100%;
+    margin-top: 16px;
+    background: linear-gradient(135deg, var(--violet), #9F67FF);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 15px 24px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: opacity 0.2s, transform 0.1s;
+    letter-spacing: -0.01em;
+  }
+  .download-btn:hover { opacity: 0.9; }
+  .download-btn:active { transform: scale(0.99); }
+
+  /* ERROR STATE */
+  .error-msg {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: #FCA5A5;
+    font-size: 0.875rem;
+    margin-top: 16px;
+  }
+
+  /* LOADING SPINNER */
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* SUCCESS TOAST */
+  .toast {
+    position: fixed;
+    bottom: 32px; right: 32px;
+    background: var(--surface);
+    border: 1px solid var(--emerald);
+    border-radius: 12px;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--white);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    transform: translateY(80px);
+    opacity: 0;
+    transition: transform 0.3s, opacity 0.3s;
+    z-index: 100;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-icon { color: var(--emerald); flex-shrink: 0; }
+
+  /* PLATFORMS */
+  .section { max-width: 1100px; margin: 0 auto; padding: 0 24px 80px; }
+  .section-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  .platforms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  .platform-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 22px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    text-align: center;
+    user-select: none;
+  }
+  .platform-card:hover {
+    border-color: var(--violet);
+    background: var(--surface2);
+    transform: translateY(-2px);
+  }
+  .platform-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+  }
+  .platform-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--silver);
+  }
+
+  /* HOW IT WORKS */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 8px;
+  }
+  .step {
+    padding: 28px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+  .step-num {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--violet);
+    line-height: 1;
+    margin-bottom: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+  .step h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .step p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.8;
+  }
+  footer a { color: var(--violet-light); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* DIVIDER */
+  hr { border: none; border-top: 1px solid var(--border); margin: 80px 24px; max-width: 1100px; margin-left: auto; margin-right: auto; }
+
+  @media (max-width: 640px) {
+    nav { padding: 14px 18px; }
+    .nav-links { display: none; }
+    .hero { padding: 50px 18px 44px; }
+    .downloader { padding: 22px 18px; border-radius: 16px; }
+    .input-row { flex-direction: column; }
+    .fetch-btn { justify-content: center; }
+    .steps { grid-template-columns: 1fr; }
+    .result-meta { flex-direction: column; }
+    .result-thumb { width: 100%; height: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 2v10m0 0l-3-3m3 3l3-3" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 14v1a2 2 0 002 2h10a2 2 0 002-2v-1" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>
+      </svg>
+    </div>
+    SnapDrop
+  </a>
+  <ul class="nav-links">
+    <li><a href="#platforms">Platforms</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <button class="nav-cta">Try Free</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">
+    <div class="badge-dot"></div>
+    Free · No account required · 20+ platforms
+  </div>
+  <h1>Download any video,<br><em>anywhere it lives.</em></h1>
+  <p class="hero-sub">Paste a link from YouTube, Instagram, TikTok, Twitter, Facebook and more — get your file in seconds.</p>
+</section>
+
+<!-- DOWNLOADER CARD -->
+<div style="max-width:780px;margin:0 auto;padding:0 24px;">
+  <div class="downloader">
+    <div class="input-row">
+      <input type="url" id="urlInput" class="url-input" placeholder="Paste video or post URL here…" autocomplete="off" spellcheck="false">
+      <button class="fetch-btn" id="fetchBtn" onclick="handleFetch()">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        Analyze
+      </button>
+    </div>
+
+    <!-- FORMAT TABS -->
+    <div class="format-row">
+      <button class="fmt-tab active" data-type="video" onclick="setFormat(this,'video')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.9L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+        </svg>
+        Video (MP4)
+      </button>
+      <button class="fmt-tab" data-type="audio" onclick="setFormat(this,'audio')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/>
+        </svg>
+        Audio (MP3)
+      </button>
+      <button class="fmt-tab" data-type="audio-aac" onclick="setFormat(this,'audio-aac')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M12 18.5A6.5 6.5 0 1112 5.5a6.5 6.5 0 010 13z"/>
+        </svg>
+        Audio (AAC)
+      </button>
+      <button class="fmt-tab" data-type="gif" onclick="setFormat(this,'gif')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+        GIF
+      </button>
+    </div>
+
+    <!-- ERROR MSG -->
+    <div class="error-msg" id="errorMsg" style="display:none;">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span id="errorText">Please enter a valid video URL.</span>
+    </div>
+
+    <!-- RESULT PANEL -->
+    <div id="result-panel">
+      <div class="result-meta">
+        <div class="result-thumb" id="thumbEl">🎬</div>
+        <div class="result-info">
+          <div class="result-title" id="titleEl">Video Title Here</div>
+          <div class="result-source"><span id="platformBadge">Platform</span></div>
+        </div>
+      </div>
+
+      <div class="quality-grid" id="qualityGrid">
+        <!-- injected by JS -->
+      </div>
+
+      <button class="download-btn" id="downloadBtn" onclick="startDownload()">
+        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+        </svg>
+        Download
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <svg class="toast-icon" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+  </svg>
+  <span>Download started successfully!</span>
+</div>
+
+<hr>
+
+<!-- PLATFORMS -->
+<section class="section" id="platforms">
+  <div class="section-label">Supported platforms</div>
+  <div class="platforms-grid">
+    <div class="platform-card" onclick="prefillUrl('youtube')">
+      <div class="platform-icon" style="background:#FF0000;">🎥</div>
+      <div class="platform-name">YouTube</div>
+    </div>
+    <div class="platform-card" onclick="prefillUrl('instagram')">
+      <div class="platform-icon" style="background:linear-gradient(135deg,#833AB4,#FD1D1D,#F56040);">📸</div>
+      <div class="platform-name">Instagram</div>
+    </div>
+    <div class="platform-card" onclick="prefillUrl('tiktok')">
+      <div class="platform-icon" style="background:#010101;">🎵</div>
+      <div class="platform-name">TikTok</div>
+    </div>
+    <div class="platform-card" onclick="prefillUrl('twitter')">
+      <div class="platform-icon" style="background:#000;">🐦</div>
+      <div class="platform-name">X / Twitter</div>
+    </div>
+    <div class="platform-card" onclick="prefillUrl('facebook')">
+      <div class="platform-icon" style="background:#1877F2;">📘</div>
+      <div class="platform-name">Facebook</div>
+    </div>
+    <div class="platform-card" onclick="prefillUrl('vimeo')">
+      <div class="platform-icon" style="background:#1AB7EA;">🎞</div>
+      <div class="platform-name">Vimeo</div>
+    </div>
+    <div class="platform-card" onclick="prefillUrl('reddit')">
+      <div class="platform-icon" style="background:#FF4500;">🤖</div>
+      <div class="platform-name">Reddit</div>
+    </div>
+    <div class="platform-card" onclick="prefillUrl('linkedin')">
+      <div class="platform-icon" style="background:#0A66C2;">💼</div>
+      <div class="platform-name">LinkedIn</div>
+    </div>
+    <div class="platform-card" onclick="prefillUrl('pinterest')">
+      <div class="platform-icon" style="background:#E60023;">📌</div>
+      <div class="platform-name">Pinterest</div>
+    </div>
+    <div class="platform-card" onclick="prefillUrl('dailymotion')">
+      <div class="platform-icon" style="background:#00ABE6;">📺</div>
+      <div class="platform-name">Dailymotion</div>
+    </div>
+    <div class="platform-card" onclick="prefillUrl('twitch')">
+      <div class="platform-icon" style="background:#9146FF;">🎮</div>
+      <div class="platform-name">Twitch</div>
+    </div>
+    <div class="platform-card" onclick="prefillUrl('soundcloud')">
+      <div class="platform-icon" style="background:#FF5500;">🔊</div>
+      <div class="platform-name">SoundCloud</div>
+    </div>
+    <div class="platform-card" onclick="prefillUrl('snapchat')">
+      <div class="platform-icon" style="background:#FFFC00;">👻</div>
+      <div class="platform-name">Snapchat</div>
+    </div>
+    <div class="platform-card" onclick="prefillUrl('bilibili')">
+      <div class="platform-icon" style="background:#00A1D6;">📡</div>
+      <div class="platform-name">Bilibili</div>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-label">How it works</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Copy the URL</h3>
+      <p>Go to any supported platform, find the video or audio you want, and copy its link from your browser or app.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Choose your format</h3>
+      <p>Pick between MP4 video at your preferred quality, MP3/AAC audio, or even a GIF clip. SnapDrop detects what's available.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Download instantly</h3>
+      <p>Hit Download. Your file saves directly to your device — no account, no email, no ads interrupting you.</p>
+    </div>
+  </div>
+</section>
+
+<hr>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="section-label">Questions</div>
+  <div style="display:grid;gap:12px;max-width:680px;">
+    <details style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 22px;cursor:pointer;">
+      <summary style="font-size:0.92rem;font-weight:600;color:var(--white);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        Is SnapDrop free to use?
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="var(--muted)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <p style="font-size:0.85rem;color:var(--muted);margin-top:14px;line-height:1.65;">Yes, completely. There are no hidden fees or account requirements. You can download as many videos as you need at no cost.</p>
+    </details>
+    <details style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 22px;cursor:pointer;">
+      <summary style="font-size:0.92rem;font-weight:600;color:var(--white);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        Is it legal to download social media videos?
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="var(--muted)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <p style="font-size:0.85rem;color:var(--muted);margin-top:14px;line-height:1.65;">Downloading is generally fine for personal, offline use. Do not redistribute, re-upload, or commercialize content you do not own. Respect copyright and the terms of each platform.</p>
+    </details>
+    <details style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 22px;cursor:pointer;">
+      <summary style="font-size:0.92rem;font-weight:600;color:var(--white);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        What is the maximum video quality available?
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="var(--muted)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <p style="font-size:0.85rem;color:var(--muted);margin-top:14px;line-height:1.65;">Up to the source resolution — we offer everything from 360p up to 4K (2160p) where the platform provides it. The quality options shown reflect what's actually available for that specific video.</p>
+    </details>
+    <details style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 22px;cursor:pointer;">
+      <summary style="font-size:0.92rem;font-weight:600;color:var(--white);list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        Do you store downloaded content on your servers?
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="var(--muted)" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <p style="font-size:0.85rem;color:var(--muted);margin-top:14px;line-height:1.65;">No. Files stream directly to your device. We act only as a bridge — nothing is retained on our end after your session ends.</p>
+    </details>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p style="margin-bottom:8px;">
+    <strong style="color:var(--silver);">SnapDrop</strong> — Download from 20+ platforms, free.
+  </p>
+  <p>
+    <a href="#">Privacy</a> &nbsp;·&nbsp; <a href="#">Terms</a> &nbsp;·&nbsp; <a href="#">Contact</a>
+  </p>
+  <p style="margin-top:12px;">For personal use only. Respect platform terms and copyright.</p>
+</footer>
+
+<script>
+  let selectedFormat = 'video';
+  let selectedQuality = null;
+
+  // Simulated video data per platform
+  const mockVideos = {
+    youtube: {
+      title: "The Most Satisfying Compilation — 4K Ultra HD",
+      platform: "YouTube",
+      emoji: "🎥",
+      qualities: [
+        { label: "2160p 4K", size: "1.8 GB", badge: "Best" },
+        { label: "1080p HD", size: "620 MB", badge: "" },
+        { label: "720p", size: "310 MB", badge: "" },
+        { label: "480p", size: "140 MB", badge: "" },
+        { label: "360p", size: "80 MB", badge: "" },
+      ]
+    },
+    instagram: {
+      title: "Nature's Hidden Moments — Reel",
+      platform: "Instagram",
+      emoji: "📸",
+      qualities: [
+        { label: "1080p HD", size: "42 MB", badge: "Best" },
+        { label: "720p", size: "24 MB", badge: "" },
+        { label: "480p", size: "12 MB", badge: "" },
+      ]
+    },
+    tiktok: {
+      title: "This Chef's Knife Technique Is Incredible 🔪",
+      platform: "TikTok",
+      emoji: "🎵",
+      qualities: [
+        { label: "1080p HD", size: "18 MB", badge: "Best" },
+        { label: "720p", size: "9 MB", badge: "" },
+        { label: "No watermark", size: "18 MB", badge: "Clean" },
+      ]
+    },
+    twitter: {
+      title: "Breaking: Incredible Aerial Footage Captured",
+      platform: "X / Twitter",
+      emoji: "🐦",
+      qualities: [
+        { label: "720p HD", size: "22 MB", badge: "Best" },
+        { label: "480p", size: "11 MB", badge: "" },
+      ]
+    },
+    facebook: {
+      title: "Live Concert Highlights — Summer Festival 2026",
+      platform: "Facebook",
+      emoji: "📘",
+      qualities: [
+        { label: "1080p HD", size: "110 MB", badge: "Best" },
+        { label: "720p", size: "58 MB", badge: "" },
+        { label: "480p", size: "28 MB", badge: "" },
+      ]
+    },
+    vimeo: {
+      title: "Midnight in Tokyo — A Short Film",
+      platform: "Vimeo",
+      emoji: "🎞",
+      qualities: [
+        { label: "4K HDR", size: "2.2 GB", badge: "Best" },
+        { label: "1080p", size: "480 MB", badge: "" },
+        { label: "720p", size: "220 MB", badge: "" },
+      ]
+    },
+    reddit: {
+      title: "Dude Builds Entire City in Minecraft Over 5 Years",
+      platform: "Reddit",
+      emoji: "🤖",
+      qualities: [
+        { label: "720p HD", size: "38 MB", badge: "Best" },
+        { label: "480p", size: "18 MB", badge: "" },
+      ]
+    },
+    linkedin: {
+      title: "How We Scaled to 1M Users — Founder Story",
+      platform: "LinkedIn",
+      emoji: "💼",
+      qualities: [
+        { label: "720p", size: "28 MB", badge: "Best" },
+        { label: "480p", size: "14 MB", badge: "" },
+      ]
+    },
+    pinterest: {
+      title: "Aesthetic Home Office Setup Timelapse",
+      platform: "Pinterest",
+      emoji: "📌",
+      qualities: [
+        { label: "1080p", size: "55 MB", badge: "Best" },
+        { label: "720p", size: "30 MB", badge: "" },
+      ]
+    },
+    dailymotion: {
+      title: "World's Top 10 Surf Moments 2026",
+      platform: "Dailymotion",
+      emoji: "📺",
+      qualities: [
+        { label: "1080p", size: "280 MB", badge: "Best" },
+        { label: "720p", size: "145 MB", badge: "" },
+        { label: "480p", size: "70 MB", badge: "" },
+      ]
+    },
+    twitch: {
+      title: "Speed Run World Record — Dark Souls III Any%",
+      platform: "Twitch",
+      emoji: "🎮",
+      qualities: [
+        { label: "Source (1080p60)", size: "1.1 GB", badge: "Best" },
+        { label: "720p60", size: "560 MB", badge: "" },
+        { label: "480p", size: "180 MB", badge: "" },
+      ]
+    },
+    soundcloud: {
+      title: "Deep Focus Mix — 3 Hour Ambient Session",
+      platform: "SoundCloud",
+      emoji: "🔊",
+      qualities: [
+        { label: "320 kbps MP3", size: "420 MB", badge: "Best" },
+        { label: "128 kbps MP3", size: "168 MB", badge: "" },
+      ]
+    },
+    snapchat: {
+      title: "Story: Day in NYC (Unfiltered)",
+      platform: "Snapchat",
+      emoji: "👻",
+      qualities: [
+        { label: "1080p HD", size: "31 MB", badge: "Best" },
+        { label: "720p", size: "17 MB", badge: "" },
+      ]
+    },
+    bilibili: {
+      title: "宇宙深处有什么？4K纪录片",
+      platform: "Bilibili",
+      emoji: "📡",
+      qualities: [
+        { label: "4K 超清", size: "1.4 GB", badge: "Best" },
+        { label: "1080p 高清", size: "500 MB", badge: "" },
+        { label: "720p", size: "240 MB", badge: "" },
+      ]
+    },
+  };
+
+  const audioQualities = [
+    { label: "320 kbps", size: "~10 MB/min", badge: "Best" },
+    { label: "192 kbps", size: "~5 MB/min", badge: "" },
+    { label: "128 kbps", size: "~3 MB/min", badge: "" },
+  ];
+
+  function detectPlatform(url) {
+    const u = url.toLowerCase();
+    if (u.includes('youtube.com') || u.includes('youtu.be')) return 'youtube';
+    if (u.includes('instagram.com')) return 'instagram';
+    if (u.includes('tiktok.com')) return 'tiktok';
+    if (u.includes('twitter.com') || u.includes('x.com')) return 'twitter';
+    if (u.includes('facebook.com') || u.includes('fb.watch')) return 'facebook';
+    if (u.includes('vimeo.com')) return 'vimeo';
+    if (u.includes('reddit.com') || u.includes('redd.it')) return 'reddit';
+    if (u.includes('linkedin.com')) return 'linkedin';
+    if (u.includes('pinterest.com') || u.includes('pin.it')) return 'pinterest';
+    if (u.includes('dailymotion.com')) return 'dailymotion';
+    if (u.includes('twitch.tv')) return 'twitch';
+    if (u.includes('soundcloud.com')) return 'soundcloud';
+    if (u.includes('snapchat.com')) return 'snapchat';
+    if (u.includes('bilibili.com')) return 'bilibili';
+    return null;
+  }
+
+  function isValidUrl(str) {
+    try { return Boolean(new URL(str)); } catch { return false; }
+  }
+
+  function setFormat(btn, type) {
+    document.querySelectorAll('.fmt-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    selectedFormat = type;
+    // If result is showing, refresh qualities
+    if (document.getElementById('result-panel').classList.contains('show')) {
+      const platform = detectPlatform(document.getElementById('urlInput').value);
+      if (platform) renderQualities(platform);
+    }
+  }
+
+  function renderQualities(platform) {
+    const grid = document.getElementById('qualityGrid');
+    grid.innerHTML = '';
+    selectedQuality = null;
+
+    const isAudio = selectedFormat === 'audio' || selectedFormat === 'audio-aac';
+    const qualities = isAudio ? audioQualities : mockVideos[platform].qualities;
+
+    qualities.forEach((q, i) => {
+      const div = document.createElement('div');
+      div.className = 'quality-option' + (i === 0 ? ' selected' : '');
+      if (i === 0) selectedQuality = q.label;
+      div.innerHTML = `
+        <div>
+          <div class="quality-label">${q.label}</div>
+          <div class="quality-size">${q.size}</div>
+        </div>
+        ${q.badge ? `<div class="quality-badge">${q.badge}</div>` : ''}
+      `;
+      div.onclick = () => {
+        document.querySelectorAll('.quality-option').forEach(o => o.classList.remove('selected'));
+        div.classList.add('selected');
+        selectedQuality = q.label;
+      };
+      grid.appendChild(div);
+    });
+  }
+
+  function showError(msg) {
+    const err = document.getElementById('errorMsg');
+    document.getElementById('errorText').textContent = msg;
+    err.style.display = 'flex';
+    setTimeout(() => { err.style.display = 'none'; }, 4000);
+  }
+
+  async function handleFetch() {
+    const url = document.getElementById('urlInput').value.trim();
+    const btn = document.getElementById('fetchBtn');
+    document.getElementById('errorMsg').style.display = 'none';
+    document.getElementById('result-panel').classList.remove('show');
+
+    if (!url) { showError('Please paste a video URL to continue.'); return; }
+    if (!isValidUrl(url)) { showError('That doesn\'t look like a valid URL. Make sure you copied the full link.'); return; }
+
+    const platform = detectPlatform(url);
+    if (!platform) { showError('Platform not recognized. Try a YouTube, TikTok, Instagram, or Twitter link.'); return; }
+
+    // Show loading state
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Analyzing…';
+
+    await new Promise(r => setTimeout(r, 1400 + Math.random() * 600));
+
+    const data = mockVideos[platform];
+
+    // Populate result
+    document.getElementById('thumbEl').textContent = data.emoji;
+    document.getElementById('titleEl').textContent = data.title;
+    document.getElementById('platformBadge').textContent = data.platform;
+    renderQualities(platform);
+
+    btn.disabled = false;
+    btn.innerHTML = `
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+      </svg>
+      Analyze`;
+
+    document.getElementById('result-panel').classList.add('show');
+  }
+
+  async function startDownload() {
+    const btn = document.getElementById('downloadBtn');
+    if (!selectedQuality) return;
+
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Preparing…';
+
+    await new Promise(r => setTimeout(r, 1800));
+
+    btn.disabled = false;
+    btn.innerHTML = `
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+      </svg>
+      Download`;
+
+    // Show toast
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3500);
+  }
+
+  function prefillUrl(platform) {
+    const samples = {
+      youtube: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      instagram: 'https://www.instagram.com/reel/CxampleReel/',
+      tiktok: 'https://www.tiktok.com/@user/video/7123456789',
+      twitter: 'https://twitter.com/user/status/1234567890123',
+      facebook: 'https://www.facebook.com/watch?v=1234567890',
+      vimeo: 'https://vimeo.com/123456789',
+      reddit: 'https://www.reddit.com/r/example/comments/abc123/video_post/',
+      linkedin: 'https://www.linkedin.com/feed/update/urn:li:activity:123/',
+      pinterest: 'https://www.pinterest.com/pin/123456789/',
+      dailymotion: 'https://www.dailymotion.com/video/x7abc12',
+      twitch: 'https://www.twitch.tv/videos/1234567890',
+      soundcloud: 'https://soundcloud.com/artist/track-name',
+      snapchat: 'https://www.snapchat.com/add/user',
+      bilibili: 'https://www.bilibili.com/video/BV1xx411c7mD',
+    };
+    document.getElementById('urlInput').value = samples[platform] || '';
+    document.getElementById('urlInput').focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Enter key support
+  document.getElementById('urlInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleFetch();
+  });
+</script>
+</body>
+</html>
