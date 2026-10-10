@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Video Downloader - Download YouTube Videos Free | SnapDrop</title>
+  <meta name="description" content="Download YouTube videos in MP4, MP3, 4K, 1080p, 720p for free. Best YouTube downloader online - no software needed. Fast, safe, and free.">
+  <meta name="keywords" content="youtube downloader, download youtube video, youtube to mp3, youtube to mp4, youtube 4k downloader, free youtube downloader">
+  <link rel="canonical" href="https://yourdomain.com/pages/youtube.html">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"YouTube Downloader - SnapDrop","url":"https://yourdomain.com/pages/youtube.html","description":"Free YouTube video downloader. Download in MP4, MP3, 4K quality."}</script>
+  <link rel="stylesheet" href="../css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- AdSense: replace with your IDs -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+</head>
+<body>
+<header>
+  <nav class="navbar">
+    <a href="../index.html" class="logo">📥 SnapDrop</a>
+    <button class="hamburger" id="hamburger">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="youtube.html" class="active">YouTube</a></li>
+      <li><a href="tiktok.html">TikTok</a></li>
+      <li><a href="instagram.html">Instagram</a></li>
+      <li><a href="blog.html">Blog</a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="ad-container ad-top"><div class="ad-placeholder">Advertisement</div></div>
+
+<section class="page-hero">
+  <h1>🎥 YouTube Video Downloader</h1>
+  <p>Download any YouTube video in MP4, MP3, WebM — up to 4K Ultra HD. Free, fast, no registration.</p>
+</section>
+
+<section class="hero" style="padding-top:32px;">
+  <div class="hero-content">
+    <div class="downloader-box">
+      <div class="format-tabs">
+        <button class="tab-btn active" onclick="setFormat(this,'mp4')">🎬 MP4 Video</button>
+        <button class="tab-btn" onclick="setFormat(this,'mp3')">🎵 MP3 Audio</button>
+        <button class="tab-btn" onclick="setFormat(this,'aac')">🎧 AAC Audio</button>
+        <button class="tab-btn" onclick="setFormat(this,'webm')">📹 WebM</button>
+      </div>
+      <div class="input-group">
+        <input type="url" id="videoUrl" placeholder="Paste YouTube URL... (youtube.com/watch?v=... or youtu.be/...)">
+        <button class="btn-primary" id="analyzeBtn" onclick="analyzeVideo()">
+          <span id="btnText">🔍 Analyze</span>
+          <div class="spinner" id="spinner" style="display:none;"></div>
+        </button>
+      </div>
+      <div class="error-box" id="errorBox" style="display:none;"><span>⚠️</span><span id="errorText"></span></div>
+      <div class="result-box" id="resultBox" style="display:none;">
+        <div class="result-header">
+          <div class="result-thumb" id="resultThumb">🎥</div>
+          <div class="result-info">
+            <h3 id="resultTitle"></h3>
+            <p id="resultPlatform">YouTube</p>
+            <p id="resultDuration"></p>
+          </div>
+        </div>
+        <h4 class="quality-heading">Select Quality:</h4>
+        <div class="quality-grid" id="qualityGrid"></div>
+        <button class="btn-download" id="downloadBtn" onclick="downloadVideo()">⬇️ Download Now</button>
+        <p class="disclaimer">Personal use only. Respect YouTube's Terms of Service.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ad-container"><div class="ad-placeholder">Advertisement</div></div>
+
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">How to Download YouTube Videos</h2>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>Copy YouTube URL</h3>
+        <p>Open YouTube, find your video, click Share → Copy Link, or copy the URL from your browser address bar.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>Paste & Analyze</h3>
+        <p>Paste the YouTube URL into the box above. Select MP4 for video or MP3 for audio, then click Analyze.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>Choose Quality & Download</h3>
+        <p>Pick your quality — up to 4K 2160p. Click Download and the file saves directly to your device.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section bg-dark">
+  <div class="container">
+    <h2 class="section-title">YouTube Downloader Features</h2>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">🎬</div><h3>4K Ultra HD</h3><p>Download YouTube videos in the highest available quality — up to 4K 2160p when available.</p></div>
+      <div class="feature-card"><div class="feature-icon">🎵</div><h3>YouTube to MP3</h3><p>Extract audio from any YouTube video. Get 320kbps MP3 files for music, podcasts, and lectures.</p></div>
+      <div class="feature-card"><div class="feature-icon">⚡</div><h3>No Software Needed</h3><p>100% browser-based. No downloads, no plugins, no installations. Works on any device.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="section bg-dark">
+  <div class="container">
+    <h2 class="section-title">YouTube Downloader FAQs</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Is it free to download YouTube videos? <span>+</span></button>
+        <div class="faq-a"><p>Yes, SnapDrop is completely free. There are no hidden fees, subscriptions, or premium plans needed.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Can I download YouTube videos on iPhone? <span>+</span></button>
+        <div class="faq-a"><p>Yes! SnapDrop works on iPhone and iPad browsers. After clicking Download, the file will open in your browser and you can save it to your device using the Share menu.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">Can I download YouTube Shorts? <span>+</span></button>
+        <div class="faq-a"><p>Yes, YouTube Shorts can be downloaded just like regular YouTube videos. Paste the Shorts URL and follow the same steps.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">What's the maximum quality I can download? <span>+</span></button>
+        <div class="faq-a"><p>SnapDrop supports up to 4K (2160p) quality for videos that have it available on YouTube. You'll see all available quality options after pasting your link.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="ad-container"><div class="ad-placeholder">Advertisement</div></div>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col"><div class="logo">📥 SnapDrop</div><p>Free YouTube video downloader. Download in MP4, MP3, 4K quality with no registration needed.</p></div>
+      <div class="footer-col"><h4>Downloaders</h4><ul><li><a href="youtube.html">YouTube</a></li><li><a href="tiktok.html">TikTok</a></li><li><a href="instagram.html">Instagram</a></li><li><a href="facebook.html">Facebook</a></li><li><a href="twitter.html">Twitter</a></li></ul></div>
+      <div class="footer-col"><h4>Company</h4><ul><li><a href="about.html">About</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="terms.html">Terms</a></li><li><a href="dmca.html">DMCA</a></li></ul></div>
+      <div class="footer-col"><h4>Formats</h4><ul><li><a href="#">MP4</a></li><li><a href="#">MP3</a></li><li><a href="#">4K</a></li><li><a href="#">WebM</a></li></ul></div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 SnapDrop. All rights reserved. Personal use only.</p></div>
+  </div>
+</footer>
+<script src="../js/main.js"></script>
+</body>
+</html>
