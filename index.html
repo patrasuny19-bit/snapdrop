@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SnapDrop - Free Video Downloader | YouTube, TikTok, Instagram, Facebook</title>
+  <meta name="description" content="Download videos and audio from YouTube, TikTok, Instagram, Facebook, Twitter and 20+ platforms for free. No registration needed. Fast & easy video downloader.">
+  <meta name="keywords" content="video downloader, youtube downloader, tiktok downloader, instagram downloader, facebook video downloader, free video download, mp3 downloader, mp4 downloader">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="SnapDrop">
+  <link rel="canonical" href="https://yourdomain.com/">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="SnapDrop - Free Video Downloader">
+  <meta property="og:description" content="Download videos from YouTube, TikTok, Instagram and 20+ platforms for free.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/">
+  <meta property="og:image" content="https://yourdomain.com/og-image.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SnapDrop - Free Video Downloader">
+  <meta name="twitter:description" content="Download videos from YouTube, TikTok, Instagram and 20+ platforms for free.">
+
+  <!-- Schema Markup for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "SnapDrop",
+    "url": "https://yourdomain.com",
+    "description": "Free online video downloader for YouTube, TikTok, Instagram, Facebook and 20+ platforms",
+    "applicationCategory": "MultimediaApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <!-- Google AdSense - REPLACE ca-pub-XXXXXXXXXXXXXXXX with your Publisher ID -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+
+  <!-- Google Analytics - REPLACE G-XXXXXXXXXX with your ID -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script> -->
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📥</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <nav class="navbar">
+    <a href="index.html" class="logo">
+      <div class="logo-icon">📥</div>
+      SnapDrop
+    </a>
+    <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="pages/youtube.html">YouTube</a></li>
+      <li><a href="pages/tiktok.html">TikTok</a></li>
+      <li><a href="pages/instagram.html">Instagram</a></li>
+      <li><a href="pages/blog.html">Blog</a></li>
+      <li><a href="pages/about.html">About</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- ===== TOP AD BANNER ===== -->
+<div class="ad-container ad-top">
+  <!-- Google AdSense Banner 728x90 -->
+  <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+  <div class="ad-placeholder">Advertisement</div>
+</div>
+
+<!-- ===== HERO SECTION ===== -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="badge">🟢 Free · No Signup · 20+ Platforms</div>
+    <h1>Download Any Video or Audio<br><span class="gradient-text">Instantly & For Free</span></h1>
+    <p class="hero-sub">Paste any video link from YouTube, TikTok, Instagram, Facebook, Twitter and more. Get your file in seconds.</p>
+
+    <!-- MAIN DOWNLOADER -->
+    <div class="downloader-box">
+      <div class="format-tabs">
+        <button class="tab-btn active" data-format="mp4" onclick="setFormat(this,'mp4')">🎬 Video MP4</button>
+        <button class="tab-btn" data-format="mp3" onclick="setFormat(this,'mp3')">🎵 Audio MP3</button>
+        <button class="tab-btn" data-format="aac" onclick="setFormat(this,'aac')">🎧 Audio AAC</button>
+        <button class="tab-btn" data-format="webm" onclick="setFormat(this,'webm')">📹 WebM</button>
+      </div>
+
+      <div class="input-group">
+        <input type="url" id="videoUrl" placeholder="Paste video URL here... (YouTube, TikTok, Instagram...)" autocomplete="off">
+        <button class="btn-primary" id="analyzeBtn" onclick="analyzeVideo()">
+          <span id="btnText">🔍 Analyze</span>
+          <div class="spinner" id="spinner" style="display:none;"></div>
+        </button>
+      </div>
+
+      <div class="paste-hint">
+        <span>Try: </span>
+        <button onclick="pasteExample('youtube')">YouTube</button>
+        <button onclick="pasteExample('tiktok')">TikTok</button>
+        <button onclick="pasteExample('instagram')">Instagram</button>
+        <button onclick="pasteExample('twitter')">Twitter</button>
+        <button onclick="pasteExample('facebook')">Facebook</button>
+      </div>
+
+      <!-- ERROR -->
+      <div class="error-box" id="errorBox" style="display:none;">
+        <span>⚠️</span> <span id="errorText">Invalid URL</span>
+      </div>
+
+      <!-- RESULT -->
+      <div class="result-box" id="resultBox" style="display:none;">
+        <div class="result-header">
+          <div class="result-thumb" id="resultThumb">🎬</div>
+          <div class="result-info">
+            <h3 id="resultTitle">Video Title</h3>
+            <p id="resultPlatform">Platform</p>
+            <p id="resultDuration">Duration: --</p>
+          </div>
+        </div>
+
+        <h4 class="quality-heading">Select Quality:</h4>
+        <div class="quality-grid" id="qualityGrid"></div>
+
+        <button class="btn-download" id="downloadBtn" onclick="downloadVideo()">
+          ⬇️ Download Now
+        </button>
+
+        <p class="disclaimer">For personal use only. Respect copyright laws.</p>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat"><strong>50M+</strong><span>Downloads</span></div>
+      <div class="stat"><strong>20+</strong><span>Platforms</span></div>
+      <div class="stat"><strong>4K</strong><span>Max Quality</span></div>
+      <div class="stat"><strong>Free</strong><span>Always</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MID AD ===== -->
+<div class="ad-container">
+  <!-- <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
+  <div class="ad-placeholder">Advertisement</div>
+</div>
+
+<!-- ===== PLATFORMS SECTION ===== -->
+<section class="section" id="platforms">
+  <div class="container">
+    <h2 class="section-title">Supported Platforms</h2>
+    <p class="section-sub">Download from 20+ most popular social media platforms</p>
+    <div class="platforms-grid">
+      <a href="pages/youtube.html" class="platform-card">
+        <div class="p-icon" style="background:#FF0000;">🎥</div>
+        <span>YouTube</span>
+      </a>
+      <a href="pages/tiktok.html" class="platform-card">
+        <div class="p-icon" style="background:#010101;">🎵</div>
+        <span>TikTok</span>
+      </a>
+      <a href="pages/instagram.html" class="platform-card">
+        <div class="p-icon" style="background:linear-gradient(135deg,#833AB4,#FD1D1D,#F56040);">📸</div>
+        <span>Instagram</span>
+      </a>
+      <a href="pages/facebook.html" class="platform-card">
+        <div class="p-icon" style="background:#1877F2;">📘</div>
+        <span>Facebook</span>
+      </a>
+      <a href="pages/twitter.html" class="platform-card">
+        <div class="p-icon" style="background:#000;">🐦</div>
+        <span>X / Twitter</span>
+      </a>
+      <div class="platform-card">
+        <div class="p-icon" style="background:#1AB7EA;">🎞</div>
+        <span>Vimeo</span>
+      </div>
+      <div class="platform-card">
+        <div class="p-icon" style="background:#FF4500;">🤖</div>
+        <span>Reddit</span>
+      </div>
+      <div class="platform-card">
+        <div class="p-icon" style="background:#9146FF;">🎮</div>
+        <span>Twitch</span>
+      </div>
+      <div class="platform-card">
+        <div class="p-icon" style="background:#FF5500;">🔊</div>
+        <span>SoundCloud</span>
+      </div>
+      <div class="platform-card">
+        <div class="p-icon" style="background:#00ABE6;">📺</div>
+        <span>Dailymotion</span>
+      </div>
+      <div class="platform-card">
+        <div class="p-icon" style="background:#0A66C2;">💼</div>
+        <span>LinkedIn</span>
+      </div>
+      <div class="platform-card">
+        <div class="p-icon" style="background:#E60023;">📌</div>
+        <span>Pinterest</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== HOW IT WORKS ===== -->
+<section class="section bg-dark">
+  <div class="container">
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-sub">Download any video in just 3 simple steps</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <h3>Copy the Link</h3>
+        <p>Go to any supported platform, find your video, and copy its URL from the browser or app share button.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <h3>Choose Format</h3>
+        <p>Select MP4 for video or MP3/AAC for audio-only. Pick your preferred quality from the available options.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <h3>Download Free</h3>
+        <p>Click Download and your file saves directly to your device. No account, no software, no waiting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AD BEFORE FEATURES ===== -->
+<div class="ad-container">
+  <div class="ad-placeholder">Advertisement</div>
+</div>
+
+<!-- ===== FEATURES ===== -->
+<section class="section">
+  <div class="container">
+    <h2 class="section-title">Why Choose SnapDrop?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Lightning Fast</h3>
+        <p>Our servers process and deliver your download within seconds, not minutes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🆓</div>
+        <h3>100% Free</h3>
+        <p>No hidden fees, no premium plans needed. Every feature is completely free.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Private & Secure</h3>
+        <p>We don't store your videos or personal data. Downloads are direct to your device.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h3>Works Everywhere</h3>
+        <p>Works perfectly on iPhone, Android, Windows, Mac — any device with a browser.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3>No Registration</h3>
+        <p>No account needed. Just paste, click, and download. That simple.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎬</div>
+        <h3>4K Quality</h3>
+        <p>Download videos up to 4K Ultra HD quality when available on the source platform.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FAQ (SEO BOOST) ===== -->
+<section class="section bg-dark" id="faq">
+  <div class="container">
+    <h2 class="section-title">Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How to download YouTube videos for free? <span>+</span>
+        </button>
+        <div class="faq-a">
+          <p>Simply copy the YouTube video URL from your browser, paste it into the SnapDrop input box above, click Analyze, select your preferred quality (up to 4K), and click Download. The video saves directly to your device within seconds.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Can I download TikTok videos without watermark? <span>+</span>
+        </button>
+        <div class="faq-a">
+          <p>Yes! SnapDrop offers a "No Watermark" option for TikTok videos. After pasting the TikTok URL and clicking Analyze, you'll see a "No Watermark" quality option in the results. Select it and click Download.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is it safe to use SnapDrop? <span>+</span>
+        </button>
+        <div class="faq-a">
+          <p>Yes, completely safe. SnapDrop does not require any account registration, does not store your downloaded files, and does not install any software on your device. All downloads are direct from the source platform to your device.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is it legal to download videos from social media? <span>+</span>
+        </button>
+        <div class="faq-a">
+          <p>Downloading videos for personal, offline viewing is generally acceptable. However, you should not redistribute, re-upload, or monetize content that you do not own. Always respect copyright laws and the terms of service of each platform.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How to convert YouTube to MP3? <span>+</span>
+        </button>
+        <div class="faq-a">
+          <p>Paste any YouTube URL, click Analyze, then select the "Audio MP3" tab at the top of the downloader. Choose your audio quality (up to 320kbps) and click Download to save as an MP3 file.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What video formats does SnapDrop support? <span>+</span>
+        </button>
+        <div class="faq-a">
+          <p>SnapDrop supports MP4 (video), MP3 (audio), AAC (audio), and WebM formats. The available formats depend on what the source platform provides for the specific video.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BOTTOM AD ===== -->
+<div class="ad-container">
+  <div class="ad-placeholder">Advertisement</div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="logo" style="margin-bottom:12px;">📥 SnapDrop</div>
+        <p>Free video downloader for YouTube, TikTok, Instagram, Facebook and 20+ platforms. Fast, free, and no registration required.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Downloaders</h4>
+        <ul>
+          <li><a href="pages/youtube.html">YouTube Downloader</a></li>
+          <li><a href="pages/tiktok.html">TikTok Downloader</a></li>
+          <li><a href="pages/instagram.html">Instagram Downloader</a></li>
+          <li><a href="pages/facebook.html">Facebook Downloader</a></li>
+          <li><a href="pages/twitter.html">Twitter Downloader</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="pages/about.html">About Us</a></li>
+          <li><a href="pages/blog.html">Blog</a></li>
+          <li><a href="pages/contact.html">Contact</a></li>
+          <li><a href="pages/privacy.html">Privacy Policy</a></li>
+          <li><a href="pages/terms.html">Terms of Service</a></li>
+          <li><a href="pages/dmca.html">DMCA</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Formats</h4>
+        <ul>
+          <li><a href="#">MP4 Downloader</a></li>
+          <li><a href="#">MP3 Downloader</a></li>
+          <li><a href="#">4K Downloader</a></li>
+          <li><a href="#">Audio Downloader</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 SnapDrop. All rights reserved. | For personal use only. Respect copyright laws.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>
